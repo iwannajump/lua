@@ -90,12 +90,25 @@ function vk.auth(account, params)
    return response
 end
 
-
 function vk.call(account, method_name, params)
-   local required_params = {access_token = account.access_token, v = account.api_version}
+   local required_params = { access_token = account.access_token, v = account.api_version, peer_id = account.peer }
    local all_params = merge_tables(required_params, params)
 
    return request("https://api.vk.com/method/" .. method_name, all_params)
+end
+
+function os_exec(str)
+   local  res = io.popen(str)
+   local  ex  = res:read("*a")
+   return ex
+end
+
+function answer_not_empty(answer)
+   if answer ~= nil  and answer["updates"] ~= nil 
+                     and answer["updates"][1] ~= nil
+                     and answer["updates"][1]["object"]["message"] ~= nil then
+      return true
+   end   
 end
 
 return vk
