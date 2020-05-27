@@ -1,24 +1,24 @@
-local vk 	= require "lib"
-local curl 	= require "cURL"
+local vk 			= require "lib"
+local curl 			= require "cURL"
 
-local group_id 		= ""
-local user_id 	 	= ""
-local account 		= vk.make_account("mail@gmail.com", "password")
-local user_token  	= "" 	-- user
-account.access_token 	= ""	-- group
-account.api_version	= "5.52"
+local group_id 			= ""
+local user_id 			= ""
+local account 			= vk.make_account("mail@gmail.com", "password")
+local user_token		= "" 	-- user
+account.access_token		= ""	-- group
+account.api_version		= "5.52"
 
 --получаем данные необходимые для запроса к Long Poll серверу
-long_poll_server 	= vk.call(account, "groups.getLongPollServer", { group_id = group_id })
-lp_server 		= long_poll_server["response"]["server"]
-lp_key 			= long_poll_server["response"]["key"]
-lp_ts 			= long_poll_server["response"]["ts"]
+long_poll_server 		= vk.call(account, "groups.getLongPollServer", { group_id = group_id })
+lp_server 			= long_poll_server["response"]["server"]
+lp_key 				= long_poll_server["response"]["key"]
+lp_ts 				= long_poll_server["response"]["ts"]
 
 while true do
 
-	local answer = 	request(lp_server,
-			{act = "a_check", key = lp_key,
-			ts = lp_ts, wait = "30"})
+	local answer = 		request(lp_server,
+				{act = "a_check", key = lp_key,
+				ts = lp_ts, wait = "30"})
 
 	if answer_not_empty(answer) == true then
 
@@ -39,7 +39,7 @@ while true do
 			local video_match = reciewed_message:match("^видео%s(.*)$")
 			if video_match ~= nil then
 				local video = request("https://api.vk.com/method/video.search?", { q = video_match, access_token = user_token, v = "5.52" })
-
+				
 				if video["response"]["items"][1] ~= nil then
 					video_owner_id 	= video["response"]["items"][1]["owner_id"]
 					video_id 	= video["response"]["items"][1]["id"]
