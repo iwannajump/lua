@@ -37,14 +37,15 @@ function request(url, params)
    local query_string = make_query_string(vkvalues_params)
    local response = {}
 
-   https.request{
+   https.request
+   {
       url = url,
       method = "POST",
       headers =
-	 {
+      {
             ["Content-Type"] = "application/x-www-form-urlencoded",
             ["Content-Length"] = #query_string
-	 },
+      },
       source = ltn12.source.string(query_string),
       sink = ltn12.sink.table(response)
    }
@@ -109,6 +110,14 @@ function answer_not_empty(answer)
                      and answer["updates"][1]["object"]["message"] ~= nil then
       return true
    end   
+end
+
+function send_message(account, message)
+   vk.call(account, "messages.send", { message = message })
+end
+
+function send_video(account, video_owner_id, vide_id)
+   vk.call(account, "messages.send", { attachment = "video" .. video_owner_id .. "_" .. video_id })
 end
 
 return vk
