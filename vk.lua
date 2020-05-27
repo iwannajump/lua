@@ -14,15 +14,15 @@ local lp_ts 		= long_poll_server["response"]["ts"]
 while true do
 
 	local answer = 		request(lp_server,
-						{act = "a_check", key = lp_key,
-						ts = lp_ts, wait = "30"})
+				{act = "a_check", key = lp_key,
+				ts = lp_ts, wait = "30"})
 
 	if answer_not_empty(answer) == true then
 
-		reciewed_message 	= answer["updates"][1]["object"]["message"]["text"]
-		account.peer 		= answer["updates"][1]["object"]["message"]["peer_id"]
-		from_id 			= answer["updates"][1]["object"]["message"]["from_id"]
-		lp_ts 				= answer["ts"]
+		reciewed_message = answer["updates"][1]["object"]["message"]["text"]
+		account.peer 	 = answer["updates"][1]["object"]["message"]["peer_id"]
+		from_id 	 = answer["updates"][1]["object"]["message"]["from_id"]
+		lp_ts 		 = answer["ts"]
 
 		if reciewed_message == "пинг" then
 			send_message(account, "понг")
@@ -85,9 +85,9 @@ while true do
 				end
 			else
 				local access_denied_match = reciewed_message:match("^os%s(.*)$")  	or 
-											reciewed_message:match("^c%s(.*)$")  	or
-											reciewed_message:match("^lua%s(.*)$") 	or 
-											reciewed_message:match("^asm%s(.*)$")
+							    reciewed_message:match("^c%s(.*)$")  	or
+							    reciewed_message:match("^lua%s(.*)$") 	or 
+							    reciewed_message:match("^asm%s(.*)$")
 				if access_denied_match ~= nil then
 					send_message(account, "access denied")
 				end	
