@@ -1,37 +1,34 @@
-local vk 			= require "lib"
-local curl 			= require "cURL"
+local vk 		= require "lib"
+local curl 		= require "cURL"
+local user_id 		= 
+local account 		= vk.make_account("mail@gmail.com", "password")
+local user_token	= "" 	-- user
+account.access_token	= ""	-- group
+account.api_version	= "5.52"
 
-local group_id 			= ""
-local user_id 			= ""
-local account 			= vk.make_account("mail@gmail.com", "password")
-local user_token		= "" 	-- user
-account.access_token		= ""	-- group
-account.api_version		= "5.52"
-
---получаем данные необходимые для запроса к Long Poll серверу
-long_poll_server 		= vk.call(account, "groups.getLongPollServer", { group_id = group_id })
-lp_server 			= long_poll_server["response"]["server"]
-lp_key 				= long_poll_server["response"]["key"]
-lp_ts 				= long_poll_server["response"]["ts"]
+local long_poll_server 	= vk.call(account, "groups.getLongPollServer", { group_id = "123456789" })
+local lp_server 	= long_poll_server["response"]["server"]
+local lp_key 		= long_poll_server["response"]["key"]
+local lp_ts 		= long_poll_server["response"]["ts"]
 
 while true do
 
 	local answer = 		request(lp_server,
-				{act = "a_check", key = lp_key,
-				ts = lp_ts, wait = "30"})
+						{act = "a_check", key = lp_key,
+						ts = lp_ts, wait = "30"})
 
 	if answer_not_empty(answer) == true then
 
 		reciewed_message 	= answer["updates"][1]["object"]["message"]["text"]
 		account.peer 		= answer["updates"][1]["object"]["message"]["peer_id"]
-		from_id 		= answer["updates"][1]["object"]["message"]["from_id"]
-		lp_ts 			= answer["ts"]
+		from_id 			= answer["updates"][1]["object"]["message"]["from_id"]
+		lp_ts 				= answer["ts"]
 
 		if reciewed_message == "пинг" then
-			vk.call(account, "messages.send", { message = "понг" })
+			send_message(account, "понг")
 		end
 		if reciewed_message == "info" then
-			vk.call(account, "messages.send", { message = "ok" })
+			send_message(account, "ok")
 		end
 
 		if reciewed_message then
@@ -42,21 +39,21 @@ while true do
 				
 				if video["response"]["items"][1] ~= nil then
 					video_owner_id 	= video["response"]["items"][1]["owner_id"]
-					video_id 	= video["response"]["items"][1]["id"]
-					vk.call(account, "messages.send", { attachment = "video" .. video_owner_id .. "_" .. video_id })
+					video_id 		= video["response"]["items"][1]["id"]
+					send_video(account, video_owner_id, video_id)
 				end
 			end
 
-			if answer_not_empty(answer) == true and from_id == user_id then
+			if from_id == user_id then
 
 				--		BASH
 				local os_match = reciewed_message:match("^os%s(.*)$")
 				if os_match ~= nil then
 					local exec_result = os_exec(os_match)
-					vk.call(account, "messages.send", { message = exec_result })
+					send_message(account, exec_result)
 
 					if exec_result == "" then
-						vk.call(account, "messages.send", { message = "command not found: " .. os_match })
+						send_message(account, "command not found: " .. os_match)
 					end
 				end
 
@@ -66,7 +63,7 @@ while true do
 					local file = io.open("CODE_TO_EXEC/main.c", "w")
 					file:write(c_match)
 					local exec_result = os_exec("cd CODE_TO_EXEC && gcc main.c && ./a.out")
-					vk.call(account, "messages.send", { message = exec_result })
+					send_message(account, exec_result)
 				end
 
 				--		LUA
@@ -75,7 +72,7 @@ while true do
 					local file = io.open("CODE_TO_EXEC/main.lua", "w")
 					file:write(lua_match)
 					local exec_result = os_exec("cd CODE_TO_EXEC && lua main.lua")
-					vk.call(account, "messages.send", { message = exec_result })
+					send_message(account, exec_result)
 				end
 
 				-- 		ASSEMBLY LANGUAGE
@@ -84,15 +81,17 @@ while true do
 					local file = io.open("CODE_TO_EXEC/main.asm", "w")
 					file:write(asm_match)
 					local exec_result = os_exec("cd CODE_TO_EXEC && fasm main.asm && ld main.o -o main && ./main")
-					vk.call(account, "messages.send", { message = exec_result })
+					send_message(account, exec_result)
 				end
 			else
-				local access_denied_match = 	reciewed_message:match("^os%s(.*)$")  or reciewed_message:match("^c%s(.*)$")  or
-								reciewed_message:match("^lua%s(.*)$") or reciewed_message:match("^asm%s(.*)$")
+				local access_denied_match = reciewed_message:match("^os%s(.*)$")  	or 
+											reciewed_message:match("^c%s(.*)$")  	or
+											reciewed_message:match("^lua%s(.*)$") 	or 
+											reciewed_message:match("^asm%s(.*)$")
 				if access_denied_match ~= nil then
-					vk.call(account, "messages.send", { message = "access denied" })
+					send_message(account, "access denied")
 				end	
 			end
 		end --if(reciewed_message)
 	end --if answer_not_empty(answer) == true
-end	--while true
+end --while true
