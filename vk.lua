@@ -1,15 +1,15 @@
-local vk 		= require "lib"
-local curl 		= require "cURL"
-local user_id 		= 
-local account 		= vk.make_account("mail@gmail.com", "password")
-local user_token	= "" 	-- user
-account.access_token	= ""	-- group
-account.api_version	= "5.52"
+local vk 			 = require "lib"
+local curl 			 = require "cURL"
+local user_id 			= 
+local account 			= vk.make_account("mail@gmail.com", "password")
+local user_token		= "" 	-- user
+account.access_token		= ""	-- group
+account.api_version		= "5.52"
 
-local long_poll_server 	= vk.call(account, "groups.getLongPollServer", { group_id = "123456789" })
-local lp_server 	= long_poll_server["response"]["server"]
-local lp_key 		= long_poll_server["response"]["key"]
-local lp_ts 		= long_poll_server["response"]["ts"]
+local long_poll_server 	= vk.call(account, "groups.getLongPollServer", { group_id = "" })
+local lp_server 		= long_poll_server["response"]["server"]
+local lp_key 			= long_poll_server["response"]["key"]
+local lp_ts 			= long_poll_server["response"]["ts"]
 
 while true do
 
@@ -19,10 +19,10 @@ while true do
 
 	if answer_not_empty(answer) == true then
 
-		reciewed_message = answer["updates"][1]["object"]["message"]["text"]
-		account.peer 	 = answer["updates"][1]["object"]["message"]["peer_id"]
-		from_id 	 = answer["updates"][1]["object"]["message"]["from_id"]
-		lp_ts 		 = answer["ts"]
+		reciewed_message 	= answer["updates"][1]["object"]["message"]["text"]
+		account.peer 		= answer["updates"][1]["object"]["message"]["peer_id"]
+		from_id 		= answer["updates"][1]["object"]["message"]["from_id"]
+		lp_ts 			= answer["ts"]
 
 		if reciewed_message == "пинг" then
 			send_message(account, "понг")
@@ -58,40 +58,22 @@ while true do
 				end
 
 				--		C
-				local c_match = reciewed_message:match("^c%s(.*)$")
-				if c_match ~= nil then
-					local file = io.open("CODE_TO_EXEC/main.c", "w")
-					file:write(c_match)
-					local exec_result = os_exec("cd CODE_TO_EXEC && gcc main.c && ./a.out")
-					send_message(account, exec_result)
-				end
+				compile(account, "^c%s(.*)$", "CODE_TO_EXEC/main.c", "cd CODE_TO_EXEC && gcc main.c && ./a.out")
 
 				--		LUA
-				local lua_match = reciewed_message:match("^lua%s(.*)$")
-				if lua_match ~= nil then
-					local file = io.open("CODE_TO_EXEC/main.lua", "w")
-					file:write(lua_match)
-					local exec_result = os_exec("cd CODE_TO_EXEC && lua main.lua")
-					send_message(account, exec_result)
-				end
+				compile(account, "^lua%s(.*)$", "CODE_TO_EXEC/main.lua", "cd CODE_TO_EXEC && lua main.lua")
 
 				-- 		ASSEMBLY LANGUAGE
-				local asm_match = reciewed_message:match("^asm%s(.*)$")
-				if asm_match ~= nil then
-					local file = io.open("CODE_TO_EXEC/main.asm", "w")
-					file:write(asm_match)
-					local exec_result = os_exec("cd CODE_TO_EXEC && fasm main.asm && ld main.o -o main && ./main")
-					send_message(account, exec_result)
-				end
+				compile(account, "^asm%s(.*)$", "CODE_TO_EXEC/main.asm", "cd CODE_TO_EXEC && fasm main.asm && ld main.o -o main && ./main")
 			else
-				local access_denied_match = reciewed_message:match("^os%s(.*)$")  	or 
-							    reciewed_message:match("^c%s(.*)$")  	or
-							    reciewed_message:match("^lua%s(.*)$") 	or 
-							    reciewed_message:match("^asm%s(.*)$")
+				local access_denied_match = 	reciewed_message:match("^os%s(.*)$")  	or 
+								reciewed_message:match("^c%s(.*)$")  	or
+								reciewed_message:match("^lua%s(.*)$") 	or 
+								reciewed_message:match("^asm%s(.*)$")
 				if access_denied_match ~= nil then
 					send_message(account, "access denied")
 				end	
 			end
 		end --if(reciewed_message)
 	end --if answer_not_empty(answer) == true
-end --while true
+end	--while true
