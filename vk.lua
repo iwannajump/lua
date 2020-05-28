@@ -1,5 +1,5 @@
-local vk 			 = require "lib"
-local curl 			 = require "cURL"
+local vk 			= require "lib"
+local curl 			= require "cURL"
 local user_id 			= 
 local account 			= vk.make_account("mail@gmail.com", "password")
 local user_token		= "" 	-- user
