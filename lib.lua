@@ -120,4 +120,15 @@ function send_video(account, video_owner_id, vide_id)
    vk.call(account, "messages.send", { attachment = "video" .. video_owner_id .. "_" .. video_id })
 end
 
+function compile (account, compile_match, exec_file, exec_command)
+   local match = reciewed_message:match(compile_match)
+   if match ~= nil then
+      local file = io.open(exec_file, "w")
+      file:write(match)
+      local exec_result = os_exec(exec_command)
+      send_message(account, exec_result)
+   end
+end
+
+
 return vk
