@@ -8,14 +8,9 @@ local function to_vkvalues(table1)
    local result = {}
 
    for key, value in pairs(table1) do
-      if type(value) == "number" then
-	 value = tostring(value)
-      elseif type(value) == "boolean" then
-	 value = value and "1" or "0"
-      elseif type(value) == "table" then
-	 value = table.concat(value, ",")
+      if type(value) == "table" then
+         value = table.concat(value, ",")
       end
-
       result[key] = value
    end
 
@@ -70,8 +65,7 @@ local function merge_tables(table1, table2)
 end
 
 function vk.make_account(username, password)
-   return {username = username, password = password, client_id = "2274003", client_secret = "hHbZxrka2uZ6jB1inYsH",
-	   api_version = "5.101"}
+   return { username = username, password = password, client_id = "2274003", client_secret = "hHbZxrka2uZ6jB1inYsH" }
 end
 
 function vk.auth(account, params)
@@ -112,21 +106,21 @@ function answer_not_empty(answer)
    end   
 end
 
-function send_message(account, message)
-   vk.call(account, "messages.send", { message = message })
+function send_message(account, text)
+   vk.call(account, "messages.send", { message = text })
 end
 
-function send_video(account, video_owner_id, vide_id)
+function send_video(account, video_owner_id, video_id)
    vk.call(account, "messages.send", { attachment = "video" .. video_owner_id .. "_" .. video_id })
 end
 
-function compile (account, compile_match, exec_file, exec_command)
+function compile (compile_match, exec_file, exec_command)
    local match = reciewed_message:match(compile_match)
    if match ~= nil then
       local file = io.open(exec_file, "w")
       file:write(match)
       local exec_result = os_exec(exec_command)
-      send_message(account, exec_result)
+      return exec_result
    end
 end
 
