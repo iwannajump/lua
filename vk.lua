@@ -100,7 +100,7 @@ while true do
 				local regex 	= 	regex_match:match "%((.*)%)%s"
 				regex 		= 	string.gsub(regex, "\\", "%%")
 				local text 	= 	regex_match:match "%)%s.*$"
-				text  		)= 	text:gsub ("%)", "")
+				text  		= 	text:gsub ("%)", "")
 				send_message(account, match_regex(regex, text))
 			end
 
