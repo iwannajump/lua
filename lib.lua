@@ -1,29 +1,23 @@
-local vk = {}
+local https    = require "ssl.https"
+local ltn12    = require "ltn12"
+local dkjson   = require "dkjson"
 
-local https = require("ssl.https")
-local ltn12 = require("ltn12")
-local dkjson = require("dkjson")
-
-local function to_vkvalues(table1)
+local function to_vkvalues( table1 )
    local result = {}
-
    for key, value in pairs(table1) do
       if type(value) == "table" then
          value = table.concat(value, ",")
       end
       result[key] = value
    end
-
    return result
 end
 
 local function make_query_string(params)
    local params_pairs = {}
-
    for key, value in pairs(params) do
       table.insert(params_pairs, key .. "=" .. value)
    end
-
    return table.concat(params_pairs, "&")
 end
 
@@ -64,38 +58,15 @@ local function merge_tables(table1, table2)
    return result
 end
 
-function vk.make_account(username, password)
+function make_account(username, password)
    return { username = username, password = password, client_id = "2274003", client_secret = "hHbZxrka2uZ6jB1inYsH" }
 end
 
-function vk.auth(account, params)
-   local params = params or {}
-
-   local required_params = {grant_type = "password", client_id = account.client_id,
-				client_secret = account.client_secret, username = account.username, password = account.password}
-   local all_params = merge_tables(required_params, params)
-
-   local response = request("https://oauth.vk.com/token", all_params)
-
-   if response.access_token then
-      account.access_token = response.access_token
-      account.expires_in = response.expires_in
-      account.user_id = response.user_id
-   end
-   return response
-end
-
-function vk.call(account, method_name, params)
+function call(account, method_name, params)
    local required_params = { access_token = account.access_token, v = account.api_version, peer_id = account.peer }
    local all_params = merge_tables(required_params, params)
 
    return request("https://api.vk.com/method/" .. method_name, all_params)
-end
-
-function os_exec(str)
-   local  res = io.popen(str)
-   local  ex  = res:read("*a")
-   return ex
 end
 
 function answer_not_empty(answer)
@@ -107,22 +78,11 @@ function answer_not_empty(answer)
 end
 
 function send_message(account, text)
-   vk.call(account, "messages.send", { message = text })
+   call(account, "messages.send", { message = text })
 end
 
 function send_video(account, video_owner_id, video_id)
-   vk.call(account, "messages.send", { attachment = "video" .. video_owner_id .. "_" .. video_id })
+   call(account, "messages.send", { attachment = "video" .. video_owner_id .. "_" .. video_id })
 end
-
-function compile (compile_match, exec_file, exec_command)
-   local match = reciewed_message:match(compile_match)
-   if match ~= nil then
-      local file = io.open(exec_file, "w")
-      file:write(match)
-      local exec_result = os_exec(exec_command)
-      return exec_result
-   end
-end
-
 
 return vk
