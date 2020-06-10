@@ -1,6 +1,6 @@
 function command_fibonacci ( account, message )
 	local fib_match = 	message:match "^фибоначчи%s(.*)$"  or 
-						message:match "^fibonacci%s(.*)$" 
+				message:match "^fibonacci%s(.*)$" 
 	if fib_match then
 		fib_match = tonumber(fib_match)
 		if fib_match then
@@ -13,7 +13,7 @@ end
 
 function command_factorial ( account, message )
 	local fac_match = 	message:match "^факториал%s(.*)$" or 
-						message:match "^factorial%s(.*)$"
+				message:match "^factorial%s(.*)$"
 	if fac_match then
 		fac_match = tonumber(fac_match)
 		if fac_match then
