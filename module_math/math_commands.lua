@@ -1,6 +1,6 @@
-function command_fibonacci ( account, message )
+function command_fibonacci ( message )
 	local fib_match = 	message:match "^фибоначчи%s(.*)$"  or 
-				message:match "^fibonacci%s(.*)$" 
+						message:match "^fibonacci%s(.*)$" 
 	if fib_match then
 		fib_match = tonumber(fib_match)
 		if fib_match then
@@ -11,9 +11,9 @@ function command_fibonacci ( account, message )
 	end
 end
 
-function command_factorial ( account, message )
+function command_factorial ( message )
 	local fac_match = 	message:match "^факториал%s(.*)$" or 
-				message:match "^factorial%s(.*)$"
+						message:match "^factorial%s(.*)$"
 	if fac_match then
 		fac_match = tonumber(fac_match)
 		if fac_match then
@@ -24,7 +24,7 @@ function command_factorial ( account, message )
 	end
 end
 
-function command_equation ( account, message )
+function command_equation ( message )
 	local equation_match = message:match "^equ%s(.*)$"
 		if equation_match then
 		equation_match = equation_match:gsub("%s", "")
@@ -33,7 +33,7 @@ function command_equation ( account, message )
 	end
 end
 
-function command_calculator ( account, message )
+function command_calculator ( message )
 	local calc_match = message:match "^calc%s([^%$].*)$"
 	if calc_match then 
 		calc_match = calc_match:gsub("%s", "")
@@ -42,14 +42,14 @@ function command_calculator ( account, message )
 	end
 end
 
-function command_hex_to_rgb ( account, message )
+function command_hex_to_rgb ( message )
 	local hex_to_rgb_match = message:match "^hex to rgb%s(.*)$"
 	if hex_to_rgb_match then
 		send_message(account, hex_to_rgb(hex_to_rgb_match))
 	end
 end
 
-function command_rgb_to_hex ( account, message )
+function command_rgb_to_hex ( message )
 	local rgb_to_hex_match = message:match "^rgb to hex%s(.*)$"
 	if rgb_to_hex_match then
 		send_message(account, rgb_to_hex(rgb_to_hex_match))
