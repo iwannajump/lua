@@ -3,9 +3,10 @@ local admin_lib 			= require "module_admin/lib_admin"
 local admin_commands 			= require "module_admin/admin_commands"
 local math_lib 				= require "module_math/lib_math"
 local math_commands 			= require "module_math/math_commands"
-local regex_command 			= require "module_regex/regex_command"
 local vk_api_commands 			= require "module_handling_api/vk_api_commands"
-local auth 				= require "auth"				--init `account` variable
+local help_command 			= require "module_help/help_command"
+local regex_command 			= require "module_regex/regex_command"
+local auth 				= require "auth"  --init `account` variable
 
 while true do
 
@@ -24,40 +25,27 @@ while true do
 		from_id 		= answer["updates"][1]["object"]["message"]["from_id"]
 		account.peer 		= answer["updates"][1]["object"]["message"]["peer_id"]
 			
-		if message ==  "помощь" then
-	    send_message( account, 	"Бот целиком и полностью написанный на Lua" .. "\n" .. 
-					"Список команд: " .. "\n" .. 
-					"1 ... видео {название}" .. "\n" .. 
-					"2 ... фибоначчи | fibonacci {число}" .. "\n" .. 
-					"3 ... факториал | factorial {число}" .. "\n" .. 
-					"4 ... rgb to hex {0...255, 0...255, 0...255}" .. "\n" .. 
-					"5 ... hex to rgb {#шестизначное hex-число}" .. "\n" ..
-					"6 ... calc {выражение}" .. "\n" .. 
-					"7 ... equ {квадратный трёхчлен}" .. "\n" ..
-					"8 ... regex {(регулярное выражение)} {текст}")
-		end
-
-		if message == "тест" then
-		send_message ( account, "ок") end
+		command_help( message )
 
 		if message then
-			print(message)
 
-			command_video_search( user_token, message )
+			command_video_search	( user_token, message )
 
-			command_fibonacci 	( account, message )
+			command_pic_search 	( user_token, message )
 
-			command_factorial 	( account, message )
+			command_fibonacci 	( message )
 
-			command_equation 	( account, message )
+			command_factorial 	( message )
 
-			command_calculator 	( account, message )
+			command_equation 	( message )
 
-			command_regex		( account, message )
+			command_calculator 	( message )
 
-			command_hex_to_rgb 	( account, message )
+			command_regex		( message )
 
-			command_rgb_to_hex 	( account, message )
+			command_hex_to_rgb 	( message )
+
+			command_rgb_to_hex 	( message )
 
 			if from_id == account.user_id then
 
@@ -66,7 +54,7 @@ while true do
 				lua_exec ( message )
 
 			else
-				error_403_message ( message )
+				error_403 ( message )
 			end
 		end
 	end
