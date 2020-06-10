@@ -1,6 +1,6 @@
-local https    = require "ssl.https"
-local ltn12    = require "ltn12"
-local dkjson   = require "dkjson"
+local https    = require "dependencies/https"
+local ltn12    = require "dependencies/ltn12"
+local dkjson   = require "dependencies/dkjson"
 
 local function to_vkvalues( table1 )
    local result = {}

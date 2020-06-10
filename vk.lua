@@ -38,7 +38,6 @@ while true do
 		end
 
 		if message then
-			print(message)
 
 			command_video_search( account, user_token, message )
 

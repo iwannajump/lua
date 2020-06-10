@@ -10,7 +10,7 @@ function bash ( account, message )
 end
 
 function lua_exec ( account, message )
-	local lua_result = compile("^lua%s(.*)$", "CODE_TO_EXEC/main.lua", "lua CODE_TO_EXEC/main.lua")
+	local lua_result = compile("^lua%s(.*)$", "main.lua", "lua main.lua")
 	send_message(account, lua_result)
 end
 

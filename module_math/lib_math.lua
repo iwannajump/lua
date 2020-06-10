@@ -1,4 +1,4 @@
-   function hex_to_rgb( hex )
+function hex_to_rgb( hex )
    if #hex == 7 then 
       local r = string.sub(hex, 2, 3)
       local g = string.sub(hex, 4, 5)

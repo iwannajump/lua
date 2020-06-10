@@ -1,1 +1,0 @@
-print("Alexey Goncharov eblan")
