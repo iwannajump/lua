@@ -58,10 +58,6 @@ local function merge_tables(table1, table2)
    return result
 end
 
-function make_account(username, password)
-   return { username = username, password = password, client_id = "2274003", client_secret = "hHbZxrka2uZ6jB1inYsH" }
-end
-
 function call(account, method_name, params)
    local required_params = { access_token = account.access_token, v = account.api_version, peer_id = account.peer }
    local all_params = merge_tables(required_params, params)
@@ -70,12 +66,14 @@ function call(account, method_name, params)
 end
 
 function answer_not_empty(answer)
-   if answer ~= nil  and answer["updates"] ~= nil 
-                     and answer["updates"][1] ~= nil
-                     and answer["updates"][1]["object"]["message"] ~= nil then
+   if    answer and
+         answer["updates"] and
+         answer["updates"][1] and
+         answer["updates"][1]["object"]["message"] then
       return true
    end   
 end
+
 
 function send_message(account, text)
    call(account, "messages.send", { message = text })

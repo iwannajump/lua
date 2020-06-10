@@ -21,8 +21,8 @@ while true do
 	if answer_not_empty(answer) == true then
 
 		message 				= answer["updates"][1]["object"]["message"]["text"]
-		account.peer 			= answer["updates"][1]["object"]["message"]["peer_id"]
 		from_id 				= answer["updates"][1]["object"]["message"]["from_id"]
+		account.peer 			= answer["updates"][1]["object"]["message"]["peer_id"]
 			
 		if message ==  "помощь" then
 	    send_message( account, 	"Бот целиком и полностью написанный на Lua" .. "\n" .. 
@@ -56,7 +56,7 @@ while true do
 
 			command_rgb_to_hex 	( account, message )
 
-			if from_id == user_id then
+			if from_id == account.user_id then
 
 				bash ( account, message )
 

@@ -1,8 +1,6 @@
-local vk 	= require "lib"
-
 function command_regex( account, message )
 	local regex_match = message:match "^regex%s(.*)$"
-	if regex_match ~= nil then
+	if regex_match then
 		local regex = 	regex_match:match "%((.*)%)%s"
 			  regex = 	string.gsub(regex, "\\", "%%")
 		local text 	= 	regex_match:match "%)%s.*$"
