@@ -74,17 +74,17 @@ function answer_not_empty( answer )
    end   
 end
 
+function get_lp_server()
+   local server = call(account, "groups.getLongPollServer", { group_id = "192764727" })
+   return server
+end
 
 function send_message( account, text )
    call(account, "messages.send", { message = text })
 end
 
-function send_video( account, video_owner_id, video_id )
-   call(account, "messages.send", { attachment = "video" .. video_owner_id .. "_" .. video_id })
-end
-
-function send_pic( account, pic_owner_id, pic_id )
-   call(account, "messages.send", { attachment = "photo" .. pic_owner_id .. "_" .. pic_id })
+function send_media( m_type, account, pic_owner_id, pic_id )
+   call(account, "messages.send", { attachment = m_type .. pic_owner_id .. "_" .. pic_id })
 end
 
 return vk

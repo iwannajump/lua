@@ -1,33 +1,35 @@
-local vk 						= require "lib"
-local admin_lib 				= require "module_admin/lib_admin"
+local vk 				= require "lib"
+local admin_lib 			= require "module_admin/lib_admin"
 local admin_commands 			= require "module_admin/admin_commands"
-local math_lib 					= require "module_math/lib_math"
+local math_lib 				= require "module_math/lib_math"
 local math_commands 			= require "module_math/math_commands"
 local vk_api_commands 			= require "module_handling_api/vk_api_commands"
-local help_command 				= require "module_help/help_command"
+local help_command 			= require "module_help/help_command"
 local regex_command 			= require "module_regex/regex_command"
-local auth 						= require "auth"  --init `account` variable
+local auth 				= require "auth"  --init `account` variable
+
+local server 				= get_lp_server()
+local lp_server 			= server["response"]["server"]
+local lp_key 				= server["response"]["key"]
+local lp_ts 				= server["response"]["ts"]
 
 while true do
 
-	local long_poll				= call(account, "groups.getLongPollServer", { group_id = "192764727" })
-	local lp_server 			= long_poll["response"]["server"]
-	local lp_key 				= long_poll["response"]["key"]
-	local lp_ts 				= long_poll["response"]["ts"]
+	local answer = 			request(lp_server,
+					{act = "a_check", key = lp_key,
+					ts = lp_ts, wait = "30"})
+	lp_ts = answer["ts"]
 
-	local answer = 				request(lp_server,
-								{act = "a_check", key = lp_key,
-								ts = lp_ts, wait = "30"})
+	if answer_not_empty(answer) then
 
-	if answer_not_empty(answer) == true then
-
-		message 				= answer["updates"][1]["object"]["message"]["text"]
-		from_id 				= answer["updates"][1]["object"]["message"]["from_id"]
-		account.peer 			= answer["updates"][1]["object"]["message"]["peer_id"]
+		message 		= answer["updates"][1]["object"]["message"]["text"]
+		from_id 		= answer["updates"][1]["object"]["message"]["from_id"]
+		account.peer 		= answer["updates"][1]["object"]["message"]["peer_id"]
 			
 		command_help( message )
 
 		if message then
+			print(message)
 
 			command_video_search( user_token, message )
 
@@ -57,5 +59,10 @@ while true do
 				error_403 ( message )
 			end
 		end
+	end
+
+	if answer_not_empty(answer) ~= true then
+		print("\tgetting new server...")
+		get_lp_server()
 	end
 end

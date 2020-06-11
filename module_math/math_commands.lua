@@ -1,5 +1,5 @@
 function command_fibonacci ( message )
-	local fib_match = 	message:match "^фибоначчи%s(.*)$"  or 
+	local fib_match =	message:match "^фибоначчи%s(.*)$"  or 
 						message:match "^fibonacci%s(.*)$" 
 	if fib_match then
 		fib_match = tonumber(fib_match)
@@ -12,7 +12,7 @@ function command_fibonacci ( message )
 end
 
 function command_factorial ( message )
-	local fac_match = 	message:match "^факториал%s(.*)$" or 
+	local fac_match =	message:match "^факториал%s(.*)$" or 
 						message:match "^factorial%s(.*)$"
 	if fac_match then
 		fac_match = tonumber(fac_match)
