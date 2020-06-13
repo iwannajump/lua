@@ -1,68 +1,107 @@
-local vk 				= require "lib"
-local admin_lib 			= require "module_admin/lib_admin"
-local admin_commands 			= require "module_admin/admin_commands"
-local math_lib 				= require "module_math/lib_math"
-local math_commands 			= require "module_math/math_commands"
-local vk_api_commands 			= require "module_handling_api/vk_api_commands"
-local help_command 			= require "module_help/help_command"
-local regex_command 			= require "module_regex/regex_command"
-local auth 				= require "auth"  --init `account` variable
+require "lib"
+require "auth"  --init `account` variable
+require "modules/module_admin/lib_admin"
+require "modules/module_admin/admin_commands"
+require "modules/module_math/lib_math"
+require "modules/module_math/math_commands"
+require "modules/module_handling_api/vk_api_commands"
+require "modules/module_help/help_command"
+require "modules/module_regex/regex_command"
+require "modules/module_translate/command_translate"
+require "modules/module_weather/weather_command"
 
-local server 				= get_lp_server()
-local lp_server 			= server["response"]["server"]
-local lp_key 				= server["response"]["key"]
-local lp_ts 				= server["response"]["ts"]
+local server 		= get_lp_server()
+local lp_server 	= server["response"]["server"]
+local lp_key 		= server["response"]["key"]
+local lp_ts 		= server["response"]["ts"]
 
 while true do
 
-	local answer = 			request(lp_server,
-					{act = "a_check", key = lp_key,
-					ts = lp_ts, wait = "30"})
-	lp_ts = answer["ts"]
+	answer =	request(lp_server,
+			{act = "a_check", key = lp_key,
+			ts = lp_ts, wait = "60"})
 
 	if answer_not_empty(answer) then
 
-		message 		= answer["updates"][1]["object"]["message"]["text"]
-		from_id 		= answer["updates"][1]["object"]["message"]["from_id"]
-		account.peer 		= answer["updates"][1]["object"]["message"]["peer_id"]
+		lp_ts = answer["ts"]
+
+		message 	= answer["updates"][1]["object"]["message"]["text"]
+		from_id 	= answer["updates"][1]["object"]["message"]["from_id"]
+		account.peer	= answer["updates"][1]["object"]["message"]["peer_id"]
 			
-		command_help( message )
+		command_help	( message )
+
+		command_mem_usage( message )
 
 		if message then
+				
 			print(message)
 
-			command_video_search( user_token, message )
+			if message:match "[Пп]ереводчик%s(.*)$" then
+				command_translate	( message )
+			end
 
-			command_pic_search 	( user_token, message )
+			if message:match "[Пп]огода%s(.*)$" then
+				command_weather 	( message )
+			end
 
-			command_fibonacci 	( message )
+			if message:match"[Вв]идео%s(.*)$" then
+				command_video_search( user_token, message )
+			end
 
-			command_factorial 	( message )
+			if message:match"[Пп]икча%s(.*)$" then
+				command_pic_search	( user_token, message )
+			end
 
-			command_equation 	( message )
+			if message:match"[Фф]ибоначчи%s(.*)$" then
+				command_fibonacci	( message )
+			end
 
-			command_calculator 	( message )
+			if message:match"[Фф]акториал%s(.*)$" then
+				command_factorial	( message )
+			end
 
-			command_regex		( message )
+			if message:match"[Ee]qu%s(.*)$" then
+				command_equation	( message )
+			end
 
-			command_hex_to_rgb 	( message )
+			if message:match"[Cc]alc%s([^%$].*)$" then
+				command_calculator	( message )
+			end
 
-			command_rgb_to_hex 	( message )
+			if message:match"[Rr]egex%s(.*)$" then
+				command_regex		( message )
+			end
+
+			if message:match "[Tt]o rgb%s(.*)$" then
+				command_hex_to_rgb	( message )
+			end
+
+			if message:match "[Tt]o hex%s(.*)" then
+				command_rgb_to_hex	( message )
+			end
 
 			if from_id == account.user_id then
 
-				bash ( message )
+				if message:match "[Oo]s%s(.*)$" then
+					bash		( message )
+				end
 
-				lua_exec ( message )
+				if message:match "[Ll]ua%s(.*)$" then
+					lua_exec	( message )
+				end
 
 			else
-				error_403 ( message )
+				error_403		( message )
 			end
 		end
 	end
 
 	if answer_not_empty(answer) ~= true then
 		print("\tgetting new server...")
-		get_lp_server()
+		server 		= get_lp_server()
+		lp_server 	= server["response"]["server"]
+		lp_key 		= server["response"]["key"]
+		lp_ts 		= server["response"]["ts"]
 	end
 end

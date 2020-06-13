@@ -1,4 +1,5 @@
 local https    = require "dependencies/https"
+local curl     = require "cURL"
 local ltn12    = require "dependencies/ltn12"
 local dkjson   = require "dependencies/dkjson"
 
@@ -61,7 +62,6 @@ end
 function call( account, method_name, params )
    local required_params = { access_token = account.access_token, v = account.api_version, peer_id = account.peer }
    local all_params = merge_tables(required_params, params)
-
    return request("https://api.vk.com/method/" .. method_name, all_params)
 end
 
@@ -75,8 +75,7 @@ function answer_not_empty( answer )
 end
 
 function get_lp_server()
-   local server = call(account, "groups.getLongPollServer", { group_id = "192764727" })
-   return server
+   return call(account, "groups.getLongPollServer", { group_id = "192764727" })
 end
 
 function send_message( account, text )
@@ -87,4 +86,14 @@ function send_media( m_type, account, pic_owner_id, pic_id )
    call(account, "messages.send", { attachment = m_type .. pic_owner_id .. "_" .. pic_id })
 end
 
-return vk
+function translate ( params )
+   local required_params = { key = account.yandex_key }
+   local all_params = merge_tables(required_params, params)
+   return request("https://translate.yandex.net/api/v1.5/tr.json/translate?", all_params)
+end
+
+function weather ( params )
+   local required_params = { key = account.weather_key, format = "json" }
+   local all_params = merge_tables(required_params, params)
+   return request("http://api.worldweatheronline.com/premium/v1/weather.ashx?", all_params)
+end
