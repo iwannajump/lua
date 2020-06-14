@@ -1,37 +1,38 @@
 require "lib"
 require "auth"  --init `account` variable
 require "modules/module_admin/lib_admin"
-require "modules/module_admin/admin_commands"
+require "modules/module_admin/commands_admin"
 require "modules/module_math/lib_math"
-require "modules/module_math/math_commands"
-require "modules/module_handling_api/vk_api_commands"
-require "modules/module_help/help_command"
-require "modules/module_regex/regex_command"
+require "modules/module_math/commands_math"
+require "modules/module_handling_api/command_video_search"
+require "modules/module_handling_api/command_pic_search"
+require "modules/module_help/command_help"
+require "modules/module_regex/command_regex"
 require "modules/module_translate/command_translate"
-require "modules/module_weather/weather_command"
+require "modules/module_weather/command_weather"
 
-local server 		= get_lp_server()
-local lp_server 	= server["response"]["server"]
-local lp_key 		= server["response"]["key"]
-local lp_ts 		= server["response"]["ts"]
+local server 			= get_lp_server()
+local lp_server 		= server["response"]["server"]
+local lp_key 			= server["response"]["key"]
+local lp_ts 			= server["response"]["ts"]
 
 while true do
 
-	answer =	request(lp_server,
-			{act = "a_check", key = lp_key,
-			ts = lp_ts, wait = "60"})
+	answer =		request(lp_server,
+				{act = "a_check", key = lp_key,
+				ts = lp_ts, wait = "60"})
 
 	if answer_not_empty(answer) then
 
 		lp_ts = answer["ts"]
 
-		message 	= answer["updates"][1]["object"]["message"]["text"]
-		from_id 	= answer["updates"][1]["object"]["message"]["from_id"]
-		account.peer	= answer["updates"][1]["object"]["message"]["peer_id"]
+		message 		= answer["updates"][1]["object"]["message"]["text"]
+		from_id 		= answer["updates"][1]["object"]["message"]["from_id"]
+		account.peer		= answer["updates"][1]["object"]["message"]["peer_id"]
 			
-		command_help	( message )
+		command_help		( message )
 
-		command_mem_usage( message )
+		command_mem_usage	( message )
 
 		if message then
 				
@@ -42,11 +43,11 @@ while true do
 			end
 
 			if message:match "[Пп]огода%s(.*)$" then
-				command_weather 	( message )
+				command_weather 		( message )
 			end
 
 			if message:match"[Вв]идео%s(.*)$" then
-				command_video_search( user_token, message )
+				command_video_search	( user_token, message )
 			end
 
 			if message:match"[Пп]икча%s(.*)$" then
@@ -84,15 +85,15 @@ while true do
 			if from_id == account.user_id then
 
 				if message:match "[Oo]s%s(.*)$" then
-					bash		( message )
+					bash			( message )
 				end
 
 				if message:match "[Ll]ua%s(.*)$" then
-					lua_exec	( message )
+					lua_exec		( message )
 				end
 
 			else
-				error_403		( message )
+				error_403			( message )
 			end
 		end
 	end
