@@ -12,10 +12,10 @@ require "modules/module_regex/command_regex"
 require "modules/module_translate/command_translate"
 require "modules/module_weather/command_weather"
 
-local server 			= get_lp_server()
-local lp_server 		= server["response"]["server"]
-local lp_key 			= server["response"]["key"]
-local lp_ts 			= server["response"]["ts"]
+local server 		= get_lp_server()
+local lp_server 	= server["response"]["server"]
+local lp_key 		= server["response"]["key"]
+local lp_ts 		= server["response"]["ts"]
 
 local start_time = os.date('!%H:%M:%S')
 
@@ -29,8 +29,8 @@ while true do
 
 		lp_ts = answer["ts"]
 
-		message 	= answer["updates"][1]["object"]["message"]["text"]
-		from_id 	= answer["updates"][1]["object"]["message"]["from_id"]
+		message	= answer["updates"][1]["object"]["message"]["text"]
+		from_id	= answer["updates"][1]["object"]["message"]["from_id"]
 		account.peer	= answer["updates"][1]["object"]["message"]["peer_id"]
 			
 		local question = message:find("?") --index
@@ -40,11 +40,11 @@ while true do
 				
 			print(message)
 
-			command_help		( message )
+			command_help			( message )
 
-			command_mem_usage	( message )
+			command_mem_usage		( message )
 
-			command_uptime 		( message, start_time )
+			command_uptime 			( message, start_time )
 
 			if message:match "[Пп]ереводчик%s(.*)$" then
 				command_translate	( message )
@@ -74,8 +74,8 @@ while true do
 				command_equation	( message )
 			end
 
-			 if message:match"[Cc]alc%s([^%$].*)$" then
-				command_calculator	( message )
+			if message:match"[Cc]alc%s([^%$].*)$" then
+		 		command_calculator	( message )
 			end
 
 			if message:match"[Rr]egex%s(.*)$" then

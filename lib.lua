@@ -1,5 +1,4 @@
 local https    = require "dependencies/https"
-local curl     = require "cURL"
 local ltn12    = require "dependencies/ltn12"
 local dkjson   = require "dependencies/dkjson"
 
