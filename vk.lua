@@ -2,6 +2,7 @@ require "lib"
 require "auth"  --init `account` variable
 require "modules/module_admin/lib_admin"
 require "modules/module_admin/commands_admin"
+require "modules/module_admin/command_uptime"
 require "modules/module_math/lib_math"
 require "modules/module_math/commands_math"
 require "modules/module_handling_api/command_video_search"
@@ -16,6 +17,8 @@ local lp_server 		= server["response"]["server"]
 local lp_key 			= server["response"]["key"]
 local lp_ts 			= server["response"]["ts"]
 
+local start_time = os.date('!%H:%M:%S')
+
 while true do
 
 	answer =		request(lp_server,
@@ -26,28 +29,33 @@ while true do
 
 		lp_ts = answer["ts"]
 
-		message 		= answer["updates"][1]["object"]["message"]["text"]
-		from_id 		= answer["updates"][1]["object"]["message"]["from_id"]
-		account.peer		= answer["updates"][1]["object"]["message"]["peer_id"]
+		message 	= answer["updates"][1]["object"]["message"]["text"]
+		from_id 	= answer["updates"][1]["object"]["message"]["from_id"]
+		account.peer	= answer["updates"][1]["object"]["message"]["peer_id"]
 			
-		command_help		( message )
+		local question = message:find("?") --index
+		local first_symbol = 1
 
-		command_mem_usage	( message )
-
-		if message then
+		if message and question == first_symbol then
 				
 			print(message)
+
+			command_help		( message )
+
+			command_mem_usage	( message )
+
+			command_uptime 		( message, start_time )
 
 			if message:match "[Пп]ереводчик%s(.*)$" then
 				command_translate	( message )
 			end
 
 			if message:match "[Пп]огода%s(.*)$" then
-				command_weather 		( message )
+				command_weather		( message )
 			end
 
 			if message:match"[Вв]идео%s(.*)$" then
-				command_video_search	( user_token, message )
+				command_video_search( user_token, message )
 			end
 
 			if message:match"[Пп]икча%s(.*)$" then
@@ -66,7 +74,7 @@ while true do
 				command_equation	( message )
 			end
 
-			if message:match"[Cc]alc%s([^%$].*)$" then
+			 if message:match"[Cc]alc%s([^%$].*)$" then
 				command_calculator	( message )
 			end
 
@@ -85,15 +93,15 @@ while true do
 			if from_id == account.user_id then
 
 				if message:match "[Oo]s%s(.*)$" then
-					bash			( message )
+					bash		( message )
 				end
 
 				if message:match "[Ll]ua%s(.*)$" then
-					lua_exec		( message )
+					lua_exec	( message )
 				end
 
 			else
-				error_403			( message )
+				error_403		( message )
 			end
 		end
 	end
