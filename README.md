@@ -25,4 +25,6 @@ Optional: `account.yandex_key` used by Yandex API
 
 Optional: `account.weather_key` used by WorldWeatherOnline API
 
+# Starting
+
 After that you're ready to start bot with `lua vk.lua`
