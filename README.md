@@ -13,7 +13,7 @@ sudo luarocks install luasocket
 
 # How to start using this bot?
 
-First of all, you need to fill in some fields:
+First of all, you need to fill in some fields in file `auth.lua`:
 
 `account.user_token`
 
