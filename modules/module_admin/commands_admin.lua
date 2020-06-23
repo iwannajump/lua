@@ -1,26 +1,21 @@
 function bash ( message )
-	local os_match = message:match "[Oo]s%s(.*)$"
-	if os_match then
-		send_message(account, os_exec(os_match))
-		if os_exec(os_match) == "" then
-			send_message(account, "command not found: " .. os_match)
-		end
-	end
+	send_message( os_exec(message .. " 2>&1") )
 end
 
-function command_mem_usage( message )
-	if message == "?память" then
-		send_message(account, os_exec("./modules/module_admin/mem.sh lua"))
-	end
+function command_bot_stat( start_time )
+	send_message( "Bot launched at " .. start_time .. "\n" ..
+			"Uptime: " .. os_exec("./modules/module_admin/process_uptime.sh lua") .. "\n" ..
+			"RAM Used: " .. string.format("%.2f KiB", collectgarbage("count")) .. "\n" ..  
+			os_exec("./modules/module_admin/cpu_usage.sh lua"))
 end
 
 function lua_exec ( message )
 	local lua_result = compile("[Ll]ua%s(.*)$", "main.lua", "lua main.lua")
-	send_message(account, lua_result)
+	send_message( lua_result)
 end
 
 function error_403 ( message )
-	if (message:match "[Ll]ua%s(.*)$" or message:match "[Oo]s%s(.*)$") ~= nil then
-		send_message(account, "access denied")
+	if message:match "[Ll]ua%s(.*)$" or message:match "[Oo]s%s(.*)$" then
+		send_message( "access denied")
 	end	
 end

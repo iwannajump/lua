@@ -77,7 +77,7 @@ function get_lp_server()
    return call(account, "groups.getLongPollServer", { group_id = "192764727" })
 end
 
-function send_message( account, text )
+function send_message( text )
    call(account, "messages.send", { message = text })
 end
 
@@ -92,7 +92,7 @@ function translate ( params )
 end
 
 function weather ( params )
-   local required_params = { key = account.weather_key, format = "json" }
+   local required_params = { key = account.weather_key, format = "json", lang = "ru" }
    local all_params = merge_tables(required_params, params)
    return request("http://api.worldweatheronline.com/premium/v1/weather.ashx?", all_params)
 end

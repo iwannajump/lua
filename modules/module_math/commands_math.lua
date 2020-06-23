@@ -1,25 +1,19 @@
 function command_fibonacci ( message )
-	local fib_match =	message:match "[Фф]ибоначчи%s(.*)$"
-	if fib_match then
-		fib_match = tonumber(fib_match)
-		if fib_match then
-			send_message(account, "F(" ..  fib_match .. ") = " .. fibonacci(fib_match))
-		else
-			send_message(account, "аргумент не является натуральным числом")
-		end
+	message = tonumber(message)
+	if message then
+		send_message( "F(" ..  message .. ") = " .. fibonacci(message))
+	else
+		send_message( "аргумент не является натуральным числом")
 	end
 end
 
 function command_factorial ( message )
-	local fac_match =	message:match "[Фф]акториал%s(.*)$"
-	if fac_match then
-		fac_match = tonumber(fac_match)
-		if fac_match then
-			send_message(account, fac_match .. "! = " .. factorial(fac_match))
+		message = tonumber(message)
+		if message then
+			send_message( message .. "! = " .. factorial(message))
 		else
-			send_message(account, "аргумент не является натуральным числом")
+			send_message( "аргумент не является натуральным числом")
 		end
-	end
 end
 
 function command_equation ( message )
@@ -27,29 +21,23 @@ function command_equation ( message )
 	if equation_match then
 		equation_match = equation_match:gsub("%s", "")
 		local equation_result = quadratic(equation_match)
-		send_message(account, equation_result)
+		send_message( equation_result)
 	end
 end
 
-function command_calculator ( message )
-	local calc_match = message:match "^[Cc]alc%s([^%$].*)$"
-	if calc_match then 
-		calc_match = calc_match:gsub("%s", "")
-		local exec_result = os_exec("wcalc " .. calc_match)
-			send_message(account, calc_match .. exec_result)
-	end
-end
+-- function command_calculator ( message )
+-- 	local calc_match = message:match "[Cc]alc%s([^%$%`].*)$"
+-- 	if calc_match then 
+-- 		calc_match = calc_match:gsub("%s", "")
+-- 		local exec_result = os_exec("wcalc " .. calc_match)
+-- 			send_message( calc_match .. exec_result)
+-- 	end
+-- end
 
 function command_hex_to_rgb ( message )
-	local hex_to_rgb_match = message:match "[Tt]o rgb%s(.*)$"
-	if hex_to_rgb_match then
-		send_message(account, hex_to_rgb(hex_to_rgb_match))
-	end
+	send_message( hex_to_rgb(message))
 end
 
 function command_rgb_to_hex ( message )
-	local rgb_to_hex_match = message:match "[Tt]o hex%s(.*)$"
-	if rgb_to_hex_match then
-		send_message(account, rgb_to_hex(rgb_to_hex_match))
-	end
+	send_message( rgb_to_hex(message))
 end
