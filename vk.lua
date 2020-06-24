@@ -19,8 +19,8 @@ while true do
 	answer = request(lp_server, {act = "a_check", key = lp_key, ts = lp_ts, wait = "60"})
 	if answer_not_empty(answer) then
 		lp_ts = answer["ts"]
-		message			= answer["updates"][1]["object"]["message"]["text"]
-		from_id			= answer["updates"][1]["object"]["message"]["from_id"]
+		message		= answer["updates"][1]["object"]["message"]["text"]
+		from_id		= answer["updates"][1]["object"]["message"]["from_id"]
 		account.peer 	= answer["updates"][1]["object"]["message"]["peer_id"]
 		local question	= message:find("?") --index
 		if message and question == 1 and from_id ~= 562486732 then
