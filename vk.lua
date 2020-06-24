@@ -12,19 +12,15 @@ require "modules/module_translate/command_translate"
 require "modules/module_weather/command_weather"
 require "command_list"
 
-local server 	= get_lp_server()
-local lp_server = server["response"]["server"]
-local lp_key 	= server["response"]["key"]
-local lp_ts 	= server["response"]["ts"]
-
+get_lp_server()
 start_time = os.date('%H:%M:%S') --neded by bot_stat command
 
 while true do
 	answer = request(lp_server, {act = "a_check", key = lp_key, ts = lp_ts, wait = "60"})
 	if answer_not_empty(answer) then
 		lp_ts = answer["ts"]
-		message		= answer["updates"][1]["object"]["message"]["text"]
-		from_id		= answer["updates"][1]["object"]["message"]["from_id"]
+		message			= answer["updates"][1]["object"]["message"]["text"]
+		from_id			= answer["updates"][1]["object"]["message"]["from_id"]
 		account.peer 	= answer["updates"][1]["object"]["message"]["peer_id"]
 		local question	= message:find("?") --index
 		if message and question == 1 and from_id ~= 562486732 then
@@ -37,9 +33,6 @@ while true do
 		end
 	end
 	if answer_not_empty(answer) ~= true then
-		server 		= get_lp_server()
-		lp_server 	= server["response"]["server"]
-		lp_key 		= server["response"]["key"]
-		lp_ts 		= server["response"]["ts"]
+		get_lp_server()
 	end
 end
