@@ -4,9 +4,9 @@ end
 
 function command_bot_stat( start_time )
 	send_message( "Bot launched at " .. start_time .. "\n" ..
-			"Uptime: " .. os_exec("./modules/module_admin/process_uptime.sh lua") .. "\n" ..
-			"RAM Used: " .. string.format("%.2f KiB", collectgarbage("count")) .. "\n" ..  
-			os_exec("./modules/module_admin/cpu_usage.sh lua"))
+				"Uptime: " .. os_exec("./modules/module_admin/process_uptime.sh lua") .. "\n" ..
+				"RAM Used: " .. string.format("%.2f KiB", collectgarbage("count")) .. "\n" ..  
+				os_exec("./modules/module_admin/cpu_usage.sh lua"))
 end
 
 function lua_exec ( message )
