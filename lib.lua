@@ -74,7 +74,10 @@ function answer_not_empty( answer )
 end
 
 function get_lp_server()
-   return call(account, "groups.getLongPollServer", { group_id = "192764727" })
+   server = call(account, "groups.getLongPollServer", { group_id = "192764727" })
+   lp_server = server["response"]["server"]
+   lp_key   = server["response"]["key"]
+   lp_ts    = server["response"]["ts"]
 end
 
 function send_message( text )
