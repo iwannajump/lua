@@ -2,7 +2,7 @@
 
 dependencies: `luasec` and `luasocket`
 
-# How to install?
+# How to install dependencies?
 
 ```
 sudo luarocks install luasec
