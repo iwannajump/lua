@@ -1,17 +1,5 @@
 local https    = require "dependencies/https"
-local ltn12    = require "dependencies/ltn12"
 local dkjson   = require "dependencies/dkjson"
-
-local function to_vkvalues( table1 )
-   local result = {}
-   for key, value in pairs(table1) do
-      if type(value) == "table" then
-         value = table.concat(value, ",")
-      end
-      result[key] = value
-   end
-   return result
-end
 
 local function make_query_string( params )
    local params_pairs = {}
@@ -22,8 +10,7 @@ local function make_query_string( params )
 end
 
 function request( url, params )
-   local vkvalues_params = to_vkvalues(params)
-   local query_string = make_query_string(vkvalues_params)
+   local query_string = make_query_string(params)
    local response = {}
 
    https.request
@@ -59,7 +46,10 @@ local function merge_tables( table1, table2 )
 end
 
 function call( account, method_name, params )
-   local required_params = { access_token = account.access_token, v = account.api_version, peer_id = account.peer }
+   local required_params =
+   {
+      access_token = account.access_token, v = account.api_version, peer_id = account.peer
+   }
    local all_params = merge_tables(required_params, params)
    return request("https://api.vk.com/method/" .. method_name, all_params)
 end
@@ -85,17 +75,26 @@ function send_message( text )
 end
 
 function send_media( m_type, account, pic_owner_id, pic_id )
-   call(account, "messages.send", { attachment = m_type .. pic_owner_id .. "_" .. pic_id })
+   call(account, "messages.send",
+   {
+      attachment = m_type .. pic_owner_id .. "_" .. pic_id
+   })
 end
 
 function translate ( params )
-   local required_params = { key = account.yandex_key }
+   local required_params =
+   {
+      key = account.yandex_key
+   }
    local all_params = merge_tables(required_params, params)
    return request("https://translate.yandex.net/api/v1.5/tr.json/translate?", all_params)
 end
 
 function weather ( params )
-   local required_params = { key = account.weather_key, format = "json", lang = "ru" }
+   local required_params =
+   {
+      key = account.weather_key, format = "json", lang = "ru"
+   }
    local all_params = merge_tables(required_params, params)
    return request("http://api.worldweatheronline.com/premium/v1/weather.ashx?", all_params)
 end
