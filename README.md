@@ -1,7 +1,5 @@
 # Simple Vk bot written in Lua
 
-dependencies: `luasec` and `luasocket`
-
 # How to install dependencies?
 
 ```
