@@ -1,4 +1,4 @@
-# Simple Vk bot written in Lua
+## Simple Vk bot written in Lua
 
 # How to install dependencies?
 
